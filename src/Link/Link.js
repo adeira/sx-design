@@ -1,22 +1,22 @@
 // @flow
 
 import * as React from 'react';
+import {
+  Link as LinkHeadless,
+  type LinkProps as LinkHeadlessProps,
+} from '@adeira/sx-design-headless';
 import sx, { type AllCSSProperties } from '@adeira/sx';
 
 import { MediaQueryMotion } from '../MediaQueries';
 
-type Props = {
-  +'href': string,
-  +'children': React.Node,
-  +'target'?: string,
-  +'isActive'?: boolean,
-  +'xstyle'?: AllCSSProperties,
-  +'data-testid'?: string,
-  +'onClick'?: (event: SyntheticEvent<HTMLAnchorElement>) => void,
-};
+type Props = $ReadOnly<{
+  ...LinkHeadlessProps,
+  +isActive?: boolean,
+  +xstyle?: AllCSSProperties,
+}>;
 
 /**
- * This component tries to create a normal `<a />` link with some reasonable default styles for
+ * This component creates a normal `<a />` link with some reasonable default styles for
  * light and dark mode. It also sets `noreferrer` and `noopener` correctly for external links.
  *
  * Optionally, you can use [React refs](https://reactjs.org/docs/refs-and-the-dom.html) and it will
@@ -27,21 +27,17 @@ type Props = {
  * `--sx-link-text-color` (overwrites default link color)
  */
 export default (React.forwardRef(function Link(props, ref) {
-  const href = props.href;
-  const isExternalLink = /^https?:\/\//.test(href);
   return (
-    // eslint-disable-next-line react/forbid-elements
-    <a
+    <LinkHeadless
       ref={ref}
-      href={href}
+      href={props.href}
       data-testid={props['data-testid']}
-      {...((isExternalLink || props.target === '_blank') && { rel: 'noreferrer noopener' })}
       target={props.target}
       className={sx(styles.default, props.isActive ? styles.active : styles.inactive, props.xstyle)}
       onClick={props.onClick}
     >
       {props.children}
-    </a>
+    </LinkHeadless>
   );
 }): React.AbstractComponent<Props, HTMLAnchorElement>);
 
